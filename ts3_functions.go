@@ -1,17 +1,12 @@
 package ts3plugin
 
+//go:generate go run ./internal/generate/ts3_functions/main.go
+
 /*
 #cgo CFLAGS: -I./pluginsdk/include -I.
 
 #include <stdlib.h> // free
-
-#include "ts3_functions.h"
-
-typedef struct TS3Functions TS3Functions;
-
-int getClientLibVersion(const struct TS3Functions funcs, char** result) {
-	return funcs.getClientLibVersion(result);
-}
+#include "generated_ts3_function_wrappers.h"
 
 */
 import "C"
