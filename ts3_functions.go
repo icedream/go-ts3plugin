@@ -20,12 +20,23 @@ type TS3Functions struct {
 
 func (this *TS3Functions) GetClientLibVersion() (result string, ok bool) {
 	// create buffer for teamspeak code to write to
-	buf := (*C.char)(C.malloc(256))
-	defer C.free(unsafe.Pointer(buf))
+	cResult := (*C.char)(C.malloc(256))
+	defer C.free(unsafe.Pointer(cResult))
 
-	code := C.getClientLibVersion(this.nativeFunctions, &buf)
+	code := C.getClientLibVersion(this.nativeFunctions, &cResult)
 	if ok = code == 0; ok {
-		result = C.GoString(buf)
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetClientLibVersionNumber() (result uint64, ok bool) {
+	var cResult C.uint64
+
+	code := C.getClientLibVersionNumber(this.nativeFunctions, &cResult)
+	if ok = code == 0; ok {
+		result = uint64(cResult)
 	}
 
 	return
