@@ -14,7 +14,7 @@ From public_errors.h
 //The idea here is: the values are 2 bytes wide, the first byte identifies the group, the second the count within that group
 
 //general
-var ErrorOk = uint32(C.ERROR_ok)
+var ErrorOK = uint32(C.ERROR_ok)
 var ErrorUndefined = uint32(C.ERROR_undefined)
 var ErrorNotImplemented = uint32(C.ERROR_not_implemented)
 var ErrorOkNoUpdate = uint32(C.ERROR_ok_no_update)
