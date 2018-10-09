@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	teamspeak_plugin "github.com/icedream/go-ts3plugin"
+	"github.com/icedream/go-ts3plugin"
+	"github.com/icedream/go-ts3plugin/teamlog"
+	"github.com/icedream/go-ts3plugin/teamspeak"
 )
 
 const (
@@ -20,39 +22,41 @@ func catchPanic() {
 }
 
 func init() {
-	MessageBox(Name, "Hello, this is Test Go Plugin running init()!", MB_ICONINFORMATION|MB_OK)
+	ts3plugin.Name = "Test Go Plugin"
+	ts3plugin.Author = "Carl Kittelberger"
+	ts3plugin.Version = "0.0.0"
 
-	teamspeak_plugin.Name = "Test Go Plugin"
-	teamspeak_plugin.Author = "Carl Kittelberger"
-	teamspeak_plugin.Version = "0.0.0"
-
-	teamspeak_plugin.Init = func() int {
+	ts3plugin.Init = func() int {
 		defer catchPanic()
 
-		version, ok := teamspeak_plugin.Functions().GetClientLibVersion()
-		if ok {
-			MessageBox(Name,
+		fmt.Println("############################################")
+		fmt.Println(ts3plugin.Name)
+		fmt.Println("by", ts3plugin.Name)
+		fmt.Println(ts3plugin.Version)
+		fmt.Println("############################################")
+
+		version, errorCode := ts3plugin.Functions().GetClientLibVersion()
+		if errorCode == teamspeak.ErrorOK {
+			ts3plugin.Functions().LogMessage(
 				fmt.Sprintf("TS3::Init - plugin ID %s running on %s!",
-					teamspeak_plugin.GetPluginID(),
+					ts3plugin.GetPluginID(),
 					version),
-				MB_ICONINFORMATION|MB_OK)
+				teamlog.LogLevelInfo, ts3plugin.Name, 0)
 		} else {
-			MessageBox(Name, "Could not get client lib version", MB_ICONERROR|MB_OK)
+			ts3plugin.Functions().LogMessage(
+				"Could not get client lib version",
+				teamlog.LogLevelError, ts3plugin.Name, 0)
 		}
 
 		return 0
 	}
 
-	teamspeak_plugin.Shutdown = func() {
+	ts3plugin.Shutdown = func() {
 		defer catchPanic()
 		defer freeMessageBoxLibraries()
-
-		MessageBox(Name, "TS3::Shutdown", MB_ICONINFORMATION|MB_OK)
 	}
 
 }
 
-func main() {
-	defer catchPanic()
-	MessageBox(Name, "Hello, this is Test Go Plugin running main()!", MB_ICONINFORMATION|MB_OK)
-}
+// This will never be run!
+func main() {}

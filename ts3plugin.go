@@ -20,12 +20,20 @@ typedef struct TS3Functions TS3Functions;
 */
 import "C"
 import (
-	"log"
+	"fmt"
 	"unsafe"
+
+	"github.com/icedream/go-ts3plugin/teamlog"
 )
 
+func notYetImplementedRaw(name string) {
+	fmt.Printf("%s - NOT YET IMPLEMENTED: %s!\n", Name, name)
+}
+
 func notYetImplemented(name string) {
-	log.Println("NOT YET IMPLEMENTED:", name)
+	Functions().LogMessage(
+		fmt.Sprintf("NOT YET IMPLEMENTED: %s!", name),
+		teamlog.LogLevelWarning, Name, 0)
 }
 
 //export ts3plugin_name
@@ -345,7 +353,7 @@ func ts3plugin_onCustom3dRolloffCalculationWaveEvent(serverConnectionHandlerID C
 
 //export ts3plugin_onUserLoggingMessageEvent
 func ts3plugin_onUserLoggingMessageEvent(logMessage *C.char, logLevel C.int, logChannel *C.char, logID C.uint64, logTime *C.char, completeLogString *C.char) {
-	notYetImplemented("ts3plugin_onUserLoggingMessageEvent")
+	notYetImplementedRaw("ts3plugin_onUserLoggingMessageEvent")
 }
 
 /* Clientlib rare */

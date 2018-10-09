@@ -10,7 +10,13 @@ package ts3plugin
 
 */
 import "C"
-import "unsafe"
+
+import (
+	"unsafe"
+
+	"github.com/icedream/go-ts3plugin/teamlog"
+	"github.com/icedream/go-ts3plugin/teamspeak"
+)
 
 /* ts3_functions.h */
 
@@ -18,26 +24,69 @@ type TS3Functions struct {
 	nativeFunctions C.TS3Functions
 }
 
-func (this *TS3Functions) GetClientLibVersion() (result string, ok bool) {
+func (this *TS3Functions) GetClientLibVersion() (result string, errorCode uint32) {
 	// create buffer for teamspeak code to write to
 	cResult := (*C.char)(C.malloc(256))
 	defer C.free(unsafe.Pointer(cResult))
 
-	code := C.getClientLibVersion(this.nativeFunctions, &cResult)
-	if ok = code == 0; ok {
+	errorCode = uint32(C.getClientLibVersion(this.nativeFunctions, &cResult))
+	if errorCode == 0 {
 		result = C.GoString(cResult)
 	}
 
 	return
 }
 
-func (this *TS3Functions) GetClientLibVersionNumber() (result uint64, ok bool) {
+func (this *TS3Functions) GetClientLibVersionNumber() (result uint64, errorCode uint32) {
 	var cResult C.uint64
 
-	code := C.getClientLibVersionNumber(this.nativeFunctions, &cResult)
-	if ok = code == 0; ok {
+	errorCode = uint32(C.getClientLibVersionNumber(this.nativeFunctions, &cResult))
+	if errorCode == 0 {
 		result = uint64(cResult)
 	}
+
+	return
+}
+
+func (this *TS3Functions) SpawnNewServerConnectionHandler(port int) (result uint64, errorCode uint32) {
+	var cResult C.uint64
+
+	errorCode = uint32(C.spawnNewServerConnectionHandler(this.nativeFunctions, C.int(port), &cResult))
+	if errorCode == 0 {
+		result = uint64(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) DestroyServerConnectionHandler(serverConnectionHandlerID uint64) (errorCode uint32) {
+	errorCode = uint32(C.destroyServerConnectionHandler(this.nativeFunctions, C.uint64(serverConnectionHandlerID)))
+
+	return
+}
+
+func (this *TS3Functions) GetErrorMessage(errorCode uint) (result string, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getErrorMessage(this.nativeFunctions, C.uint(errorCode), &cResult))
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) LogMessage(logMessage string, severity teamlog.LogLevel, channel string, logID uint64) (retErrorCode uint32) {
+	cLogMessage := C.CString(logMessage)
+	defer C.free(unsafe.Pointer(cLogMessage))
+
+	cChannel := C.CString(channel)
+	defer C.free(unsafe.Pointer(cChannel))
+
+	retErrorCode = uint32(C.logMessage(this.nativeFunctions, cLogMessage,
+		uint32(severity), cChannel, C.uint64(logID)))
 
 	return
 }
