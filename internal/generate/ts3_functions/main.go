@@ -10,7 +10,11 @@ import (
 	"text/template"
 )
 
-var codeTpl = template.Must(template.New("codeTpl").Parse(`
+var codeTpl = template.Must(template.New("codeTpl").Parse(`/**
+ * This file has been automatically generated.
+ * Please use 'go generate' to update this file.
+ */
+
 #include "ts3_functions.h"
 
 typedef struct TS3Functions TS3Functions;

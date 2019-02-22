@@ -90,3 +90,21 @@ func (this *TS3Functions) LogMessage(logMessage string, severity teamlog.LogLeve
 
 	return
 }
+
+func (this *TS3Functions) PrintMessage(serverConnectionHandlerID uint64, message string, messageTarget PluginMessageTarget) {
+	messageC := C.CString(message)
+	defer C.free(unsafe.Pointer(messageC))
+
+	C.printMessage(this.nativeFunctions, C.uint64(serverConnectionHandlerID), messageC, uint32(messageTarget))
+
+	return
+}
+
+func (this *TS3Functions) PrintMessageToCurrentTab(message string) {
+	messageC := C.CString(message)
+	defer C.free(unsafe.Pointer(messageC))
+
+	C.printMessageToCurrentTab(this.nativeFunctions, messageC)
+
+	return
+}

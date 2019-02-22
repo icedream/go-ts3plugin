@@ -1,3 +1,7 @@
+/**
+ * This file has been automatically generated.
+ * Please use 'go generate' to update this file.
+ */
 
 #include "ts3_functions.h"
 

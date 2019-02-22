@@ -21,13 +21,19 @@ typedef struct TS3Functions TS3Functions;
 import "C"
 import (
 	"fmt"
+	"time"
 	"unsafe"
 
 	"github.com/icedream/go-ts3plugin/teamlog"
+	"github.com/icedream/go-ts3plugin/teamspeak"
 )
 
-func notYetImplementedRaw(name string) {
-	fmt.Printf("%s - NOT YET IMPLEMENTED: %s!\n", Name, name)
+const (
+	logTimeLayout = "2006-01-02 15:04:05.999999"
+)
+
+func convertAnyIDToGo(value C.anyID) teamspeak.AnyID {
+	return teamspeak.AnyID(uint16(value))
 }
 
 func notYetImplemented(name string) {
@@ -128,7 +134,11 @@ func ts3plugin_processCommand(serverConnectionHandlerID C.uint64, command *C.cha
 
 //export ts3plugin_currentServerConnectionChanged
 func ts3plugin_currentServerConnectionChanged(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_currentServerConnectionChanged")
+	if CurrentServerConnectionChanged != nil {
+		CurrentServerConnectionChanged(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_infoTitle
@@ -161,52 +171,128 @@ func ts3plugin_requestAutoload() C.int {
 /* Clientlib */
 //export ts3plugin_onConnectStatusChangeEvent
 func ts3plugin_onConnectStatusChangeEvent(serverConnectionHandlerID C.uint64, newStatus C.int, errorNumber C.uint) {
-	notYetImplemented("ts3plugin_onConnectStatusChangeEvent")
+	if OnConnectedStatusChangeEvent != nil {
+		OnConnectedStatusChangeEvent(
+			uint64(serverConnectionHandlerID),
+			int(newStatus),
+			uint(errorNumber),
+		)
+	}
 }
 
 //export ts3plugin_onNewChannelEvent
 func ts3plugin_onNewChannelEvent(serverConnectionHandlerID C.uint64, channelID C.uint64, channelParentID C.uint64) {
-	notYetImplemented("ts3plugin_onNewChannelEvent")
+	if OnNewChannelEvent != nil {
+		OnNewChannelEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+			uint64(channelParentID),
+		)
+	}
 }
 
 //export ts3plugin_onNewChannelCreatedEvent
 func ts3plugin_onNewChannelCreatedEvent(serverConnectionHandlerID C.uint64, channelID C.uint64, channelParentID C.uint64, invokerID C.anyID, invokerName *C.char, invokerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onNewChannelCreatedEvent")
+	if OnNewChannelCreatedEvent != nil {
+		OnNewChannelCreatedEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+			uint64(channelParentID),
+			convertAnyIDToGo(invokerID),
+			C.GoString(invokerName),
+			C.GoString(invokerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onDelChannelEvent
 func ts3plugin_onDelChannelEvent(serverConnectionHandlerID C.uint64, channelID C.uint64, invokerID C.anyID, invokerName *C.char, invokerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onDelChannelEvent")
+	if OnDelChannelEvent != nil {
+		OnDelChannelEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+			convertAnyIDToGo(invokerID),
+			C.GoString(invokerName),
+			C.GoString(invokerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onChannelMoveEvent
 func ts3plugin_onChannelMoveEvent(serverConnectionHandlerID C.uint64, channelID C.uint64, newChannelParentID C.uint64, invokerID C.anyID, invokerName *C.char, invokerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onChannelMoveEvent")
+	if OnChannelMoveEvent != nil {
+		OnChannelMoveEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+			uint64(newChannelParentID),
+			convertAnyIDToGo(invokerID),
+			C.GoString(invokerName),
+			C.GoString(invokerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onUpdateChannelEvent
 func ts3plugin_onUpdateChannelEvent(serverConnectionHandlerID C.uint64, channelID C.uint64) {
-	notYetImplemented("ts3plugin_onUpdateChannelEvent")
+	if OnUpdateChannelEvent != nil {
+		OnUpdateChannelEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+		)
+	}
 }
 
 //export ts3plugin_onUpdateChannelEditedEvent
 func ts3plugin_onUpdateChannelEditedEvent(serverConnectionHandlerID C.uint64, channelID C.uint64, invokerID C.anyID, invokerName *C.char, invokerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onUpdateChannelEditedEvent")
+	if OnUpdateChannelEditedEvent != nil {
+		OnUpdateChannelEditedEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+			convertAnyIDToGo(invokerID),
+			C.GoString(invokerName),
+			C.GoString(invokerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onUpdateClientEvent
 func ts3plugin_onUpdateClientEvent(serverConnectionHandlerID C.uint64, clientID C.anyID, invokerID C.anyID, invokerName *C.char, invokerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onUpdateClientEvent")
+	if OnUpdateClientEvent != nil {
+		OnUpdateClientEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(clientID),
+			convertAnyIDToGo(invokerID),
+			C.GoString(invokerName),
+			C.GoString(invokerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onClientMoveEvent
 func ts3plugin_onClientMoveEvent(serverConnectionHandlerID C.uint64, clientID C.anyID, oldChannelID C.uint64, newChannelID C.uint64, visibility C.int, moveMessage *C.char) {
-	notYetImplemented("ts3plugin_onClientMoveEvent")
+	if OnClientMoveEvent != nil {
+		OnClientMoveEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(clientID),
+			uint64(oldChannelID),
+			uint64(newChannelID),
+			teamspeak.Visibility(int(visibility)),
+			C.GoString(moveMessage),
+		)
+	}
 }
 
 //export ts3plugin_onClientMoveSubscriptionEvent
 func ts3plugin_onClientMoveSubscriptionEvent(serverConnectionHandlerID C.uint64, clientID C.anyID, oldChannelID C.uint64, newChannelID C.uint64, visibility C.int) {
-	notYetImplemented("ts3plugin_onClientMoveSubscriptionEvent")
+	if OnClientMoveSubscriptionEvent != nil {
+		OnClientMoveSubscriptionEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(clientID),
+			uint64(oldChannelID),
+			uint64(newChannelID),
+			teamspeak.Visibility(int(visibility)),
+		)
+	}
 }
 
 //export ts3plugin_onClientMoveTimeoutEvent
@@ -236,84 +322,171 @@ func ts3plugin_onClientIDsEvent(serverConnectionHandlerID C.uint64, uniqueClient
 
 //export ts3plugin_onClientIDsFinishedEvent
 func ts3plugin_onClientIDsFinishedEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onClientIDsFinishedEvent")
+	if OnClientIDsFinishedEvent != nil {
+		OnClientIDsFinishedEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onServerEditedEvent
 func ts3plugin_onServerEditedEvent(serverConnectionHandlerID C.uint64, editerID C.anyID, editerName *C.char, editerUniqueIdentifier *C.char) {
-	notYetImplemented("ts3plugin_onServerEditedEvent")
+	if OnServerEditedEvent != nil {
+		OnServerEditedEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(editerID),
+			C.GoString(editerName),
+			C.GoString(editerUniqueIdentifier),
+		)
+	}
 }
 
 //export ts3plugin_onServerUpdatedEvent
 func ts3plugin_onServerUpdatedEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onServerUpdatedEvent")
+	if OnServerUpdatedEvent != nil {
+		OnServerUpdatedEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onServerErrorEvent
 func ts3plugin_onServerErrorEvent(serverConnectionHandlerID C.uint64, errorMessage *C.char, errorCode C.uint, returnCode *C.char, extraMessage *C.char) C.int {
-	notYetImplemented("ts3plugin_onServerErrorEvent")
+	if OnServerErrorEvent != nil {
+		return C.int(OnServerErrorEvent(
+			uint64(serverConnectionHandlerID),
+			C.GoString(errorMessage),
+			uint(errorCode),
+			C.GoString(returnCode),
+			C.GoString(extraMessage),
+		))
+	}
 	return 0
 }
 
 //export ts3plugin_onServerStopEvent
 func ts3plugin_onServerStopEvent(serverConnectionHandlerID C.uint64, shutdownMessage *C.char) {
-	notYetImplemented("ts3plugin_onServerStopEvent")
+	if OnServerStopEvent != nil {
+		OnServerStopEvent(
+			uint64(serverConnectionHandlerID),
+			C.GoString(shutdownMessage),
+		)
+	}
 }
 
 //export ts3plugin_onTextMessageEvent
 func ts3plugin_onTextMessageEvent(serverConnectionHandlerID C.uint64, targetMode C.anyID, toID C.anyID, fromID C.anyID, fromName *C.char, fromUniqueIdentifier *C.char, message *C.char, ffIgnored C.int) C.int {
-	notYetImplemented("ts3plugin_onTextMessageEvent")
+	if OnTextMessageEvent != nil {
+		return C.int(OnTextMessageEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(targetMode),
+			convertAnyIDToGo(toID),
+			convertAnyIDToGo(fromID),
+			C.GoString(fromName),
+			C.GoString(fromUniqueIdentifier),
+			C.GoString(message),
+			int(ffIgnored) != 0,
+		))
+	}
 	return 0
 }
 
 //export ts3plugin_onTalkStatusChangeEvent
 func ts3plugin_onTalkStatusChangeEvent(serverConnectionHandlerID C.uint64, status C.int, isReceivedWhisper C.int, clientID C.anyID) {
-	notYetImplemented("ts3plugin_onTalkStatusChangeEvent")
+	if OnTalkStatusChangeEvent != nil {
+		OnTalkStatusChangeEvent(
+			uint64(serverConnectionHandlerID),
+			int(status),
+			int(isReceivedWhisper),
+			convertAnyIDToGo(clientID),
+		)
+	}
 }
 
 //export ts3plugin_onConnectionInfoEvent
 func ts3plugin_onConnectionInfoEvent(serverConnectionHandlerID C.uint64, clientID C.anyID) {
-	notYetImplemented("ts3plugin_onConnectionInfoEvent")
+	if OnConnectionInfoEvent != nil {
+		OnConnectionInfoEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(clientID),
+		)
+	}
 }
 
 //export ts3plugin_onServerConnectionInfoEvent
 func ts3plugin_onServerConnectionInfoEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onServerConnectionInfoEvent")
+	if OnServerConnectionInfoEvent != nil {
+		OnServerConnectionInfoEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelSubscribeEvent
 func ts3plugin_onChannelSubscribeEvent(serverConnectionHandlerID C.uint64, channelID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelSubscribeEvent")
+	if OnChannelSubscribeEvent != nil {
+		OnChannelSubscribeEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelSubscribeFinishedEvent
 func ts3plugin_onChannelSubscribeFinishedEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelSubscribeFinishedEvent")
+	if OnChannelSubscribeFinishedEvent != nil {
+		OnChannelSubscribeFinishedEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelUnsubscribeEvent
 func ts3plugin_onChannelUnsubscribeEvent(serverConnectionHandlerID C.uint64, channelID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelUnsubscribeEvent")
+	if OnChannelUnsubscribeEvent != nil {
+		OnChannelUnsubscribeEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelUnsubscribeFinishedEvent
 func ts3plugin_onChannelUnsubscribeFinishedEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelUnsubscribeFinishedEvent")
+	if OnChannelUnsubscribeFinishedEvent != nil {
+		OnChannelUnsubscribeFinishedEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelDescriptionUpdateEvent
 func ts3plugin_onChannelDescriptionUpdateEvent(serverConnectionHandlerID C.uint64, channelID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelDescriptionUpdateEvent")
+	if OnChannelDescriptionUpdateEvent != nil {
+		OnChannelDescriptionUpdateEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+		)
+	}
 }
 
 //export ts3plugin_onChannelPasswordChangedEvent
 func ts3plugin_onChannelPasswordChangedEvent(serverConnectionHandlerID C.uint64, channelID C.uint64) {
-	notYetImplemented("ts3plugin_onChannelPasswordChangedEvent")
+	if OnChannelPasswordChangedEvent != nil {
+		OnChannelPasswordChangedEvent(
+			uint64(serverConnectionHandlerID),
+			uint64(channelID),
+		)
+	}
 }
 
 //export ts3plugin_onPlaybackShutdownCompleteEvent
 func ts3plugin_onPlaybackShutdownCompleteEvent(serverConnectionHandlerID C.uint64) {
-	notYetImplemented("ts3plugin_onPlaybackShutdownCompleteEvent")
+	if OnPlaybackShutdownCompleteEvent != nil {
+		OnPlaybackShutdownCompleteEvent(
+			uint64(serverConnectionHandlerID),
+		)
+	}
 }
 
 //export ts3plugin_onSoundDeviceListChangedEvent
@@ -353,7 +526,17 @@ func ts3plugin_onCustom3dRolloffCalculationWaveEvent(serverConnectionHandlerID C
 
 //export ts3plugin_onUserLoggingMessageEvent
 func ts3plugin_onUserLoggingMessageEvent(logMessage *C.char, logLevel C.int, logChannel *C.char, logID C.uint64, logTime *C.char, completeLogString *C.char) {
-	notYetImplementedRaw("ts3plugin_onUserLoggingMessageEvent")
+	logTimeParsed, _ := time.Parse(logTimeLayout, C.GoString(logTime))
+	if OnUserLoggingMessageEvent != nil {
+		OnUserLoggingMessageEvent(
+			C.GoString(logMessage),
+			teamlog.LogLevel(int(logLevel)),
+			C.GoString(logChannel),
+			uint64(logID),
+			logTimeParsed,
+			C.GoString(completeLogString),
+		)
+	}
 }
 
 /* Clientlib rare */
