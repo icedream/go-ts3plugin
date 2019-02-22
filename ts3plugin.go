@@ -39,7 +39,7 @@ func convertAnyIDToGo(value C.anyID) teamspeak.AnyID {
 func notYetImplemented(name string) {
 	Functions().LogMessage(
 		fmt.Sprintf("NOT YET IMPLEMENTED: %s!", name),
-		teamlog.LogLevelWarning, Name, 0)
+		teamlog.Warning, Name, 0)
 }
 
 //export ts3plugin_name

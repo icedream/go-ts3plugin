@@ -65,7 +65,7 @@ func (this *TS3Functions) DestroyServerConnectionHandler(serverConnectionHandler
 	return
 }
 
-func (this *TS3Functions) GetErrorMessage(errorCode uint) (result string, retErrorCode uint32) {
+func (this *TS3Functions) GetErrorMessage(errorCode uint32) (result string, retErrorCode uint32) {
 	// create buffer for teamspeak code to write to
 	cResult := (*C.char)(C.malloc(2 * 1024))
 	defer C.free(unsafe.Pointer(cResult))

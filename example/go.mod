@@ -1,9 +1,9 @@
 module github.com/icedream/go-ts3plugin/example
 
 require (
-	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
 	github.com/icedream/go-ts3plugin v0.0.0
-	github.com/josephspurrier/goversioninfo v0.0.0-20180220052333-42534847954b // indirect
+	golang.org/x/net v0.0.0-20190213061140-3a22650c66bd
+	mvdan.cc/xurls/v2 v2.0.0
 )
 
 replace github.com/icedream/go-ts3plugin v0.0.0 => ../
