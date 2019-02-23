@@ -123,7 +123,7 @@ func init() {
 		defer catchPanic()
 
 		version, errCode := ts3plugin.Functions().GetClientLibVersion()
-		if errCode != teamspeak.ErrorOK {
+		if errCode == teamspeak.ErrorOK {
 			log(
 				fmt.Sprintf("TS3::Init - plugin ID %s running on %s!",
 					ts3plugin.GetPluginID(),
