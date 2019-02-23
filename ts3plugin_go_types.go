@@ -27,7 +27,7 @@ var (
 )
 
 var (
-	Init                           func() int
+	Init                           func() (ok bool)
 	Shutdown                       func()
 	OffersConfigure                func() PluginConfigureOffer
 	Configure                      func(handle byte, qParentWidget byte)

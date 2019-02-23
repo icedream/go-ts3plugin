@@ -80,7 +80,11 @@ func ts3plugin_init() C.int {
 		return 0
 	}
 
-	return C.int(Init())
+	if !Init() {
+		return 1
+	}
+
+	return 0
 }
 
 //export ts3plugin_shutdown

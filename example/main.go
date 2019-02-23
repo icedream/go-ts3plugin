@@ -119,7 +119,7 @@ func init() {
 				logMessage))
 	}
 
-	ts3plugin.Init = func() int {
+	ts3plugin.Init = func() (ok bool) {
 		defer catchPanic()
 
 		version, errCode := ts3plugin.Functions().GetClientLibVersion()
@@ -129,6 +129,7 @@ func init() {
 					ts3plugin.GetPluginID(),
 					version),
 				teamlog.Debug)
+			ok = true
 		} else {
 			msg := ""
 			if errMsg, errCode2 := ts3plugin.Functions().GetErrorMessage(errCode); errCode2 == 0 {
@@ -142,7 +143,7 @@ func init() {
 				teamlog.Critical)
 		}
 
-		return 0
+		return
 	}
 
 	ts3plugin.Shutdown = func() {
