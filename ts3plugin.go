@@ -32,6 +32,62 @@ const (
 	logTimeLayout = "2006-01-02 15:04:05.999999"
 )
 
+type Samples struct {
+	channels     int
+	samplesSlice []C.short
+	sampleCount  int
+	edited       bool
+}
+
+func newSamples(samplesArrayPointer *C.short, sampleCount C.int, channels C.int) *Samples {
+	// Convert samples C array pointer to Go slice
+	length := int(sampleCount) * int(channels)
+	samplesSlice := (*[1 << 28]C.short)(unsafe.Pointer(samplesArrayPointer))[:length:length]
+
+	return &Samples{
+		channels:     int(channels),
+		sampleCount:  int(sampleCount),
+		samplesSlice: samplesSlice,
+	}
+}
+
+func (s *Samples) Channels() int {
+	return s.channels
+}
+
+func (s *Samples) SampleCount() int {
+	return s.sampleCount
+}
+
+func (s *Samples) IsEdited() bool {
+	return s.edited
+}
+
+// GetSamples returns an array containing the requested amount of samples
+// for all channels. The resulting slice will be the requested sample count
+// multiplied by the channel count.
+// The array is a copy of all the values. To store the samples value, use
+// SetSamples.
+func (s *Samples) GetSamples(offset int, sampleCount int) (samples []int16) {
+	samples = make([]int16, sampleCount*s.channels)
+	for i := 0; i < len(samples); i++ {
+		samples[i] = int16(s.samplesSlice[i])
+	}
+	return
+}
+
+// SetSamples writes the passed samples array to the original memory at the given
+// offset.
+func (s *Samples) SetSamples(offset int, samples []int16) {
+	if len(samples)%s.channels != 0 {
+		panic("Samples array must have a sample for each channel but does not.")
+	}
+	for i := offset; i < offset+len(samples); i++ {
+		s.samplesSlice[i] = C.short(samples[i])
+	}
+	s.edited = true
+}
+
 func convertAnyIDToGo(value C.anyID) teamspeak.AnyID {
 	return teamspeak.AnyID(uint16(value))
 }
@@ -510,12 +566,49 @@ func ts3plugin_onEditPostProcessVoiceDataEvent(serverConnectionHandlerID C.uint6
 
 //export ts3plugin_onEditMixedPlaybackVoiceDataEvent
 func ts3plugin_onEditMixedPlaybackVoiceDataEvent(serverConnectionHandlerID C.uint64, samples *C.short, sampleCount C.int, channels C.int, channelSpeakerArray *C.uint, channelFillMask *C.uint) {
-	notYetImplemented("ts3plugin_onEditMixedPlaybackVoiceDataEvent")
+	if OnEditMixedPlaybackVoiceDataEvent != nil {
+		channelsGo := int(channels)
+		channelSpeakerSlice := make([]uint, channelsGo)
+		for i, value := range (*[1 << 28]C.uint)(unsafe.Pointer(channelSpeakerArray))[:channelsGo:channelsGo] {
+			channelSpeakerSlice[i] = uint(value)
+		}
+
+		channelFillMaskGo := uint(*channelFillMask)
+
+		samplesGo := newSamples(samples, sampleCount, channels)
+
+		OnEditMixedPlaybackVoiceDataEvent(
+			uint64(serverConnectionHandlerID),
+			samplesGo,
+			channelSpeakerSlice,
+			&channelFillMaskGo,
+		)
+
+		*channelFillMask = C.uint(channelFillMaskGo)
+	}
 }
 
 //export ts3plugin_onEditCapturedVoiceDataEvent
-func ts3plugin_onEditCapturedVoiceDataEvent(serverConnectionHandlerID C.uint64, samples *C.short, sampleCount C.int, channels C.int, edited *C.int) {
-	notYetImplemented("ts3plugin_onEditCapturedVoiceDataEvent")
+func ts3plugin_onEditCapturedVoiceDataEvent(serverConnectionHandlerID C.uint64, samples *C.short, sampleCount C.int, channels C.int, edited *C.uint) {
+	if OnEditCapturedVoiceDataEvent != nil {
+		samplesGo := newSamples(samples, sampleCount, channels)
+
+		shouldMute := OnEditCapturedVoiceDataEvent(
+			uint64(serverConnectionHandlerID),
+			samplesGo,
+			(*edited|2) == 0, // check if bit 2 is unset (whether audio is muted)
+		)
+
+		if shouldMute {
+			*edited &= ^C.uint(2) // clear bit 2
+		} else {
+			*edited |= 2 // set bit 2
+		}
+
+		if samplesGo.IsEdited() {
+			*edited |= 1 // set bit 1
+		}
+	}
 }
 
 //export ts3plugin_onCustom3dRolloffCalculationClientEvent

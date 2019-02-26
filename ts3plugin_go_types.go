@@ -61,6 +61,9 @@ var (
 	OnChannelDescriptionUpdateEvent   func(serverConnectionHandlerID uint64, channelID uint64)
 	OnChannelPasswordChangedEvent     func(serverConnectionHandlerID uint64, channelID uint64)
 	OnPlaybackShutdownCompleteEvent   func(serverConnectionHandlerID uint64)
+	OnEditCapturedVoiceDataEvent      func(serverConnectionHandlerID uint64, samples *Samples, isMuted bool) (shouldMute bool)
+	// TODO - use a speaker enum type?
+	OnEditMixedPlaybackVoiceDataEvent func(serverConnectionHandlerID uint64, samples *Samples, channelSpeakers []uint, channelFillMask *uint)
 )
 
 var (
