@@ -108,3 +108,69 @@ func (this *TS3Functions) PrintMessageToCurrentTab(message string) {
 
 	return
 }
+
+func (this *TS3Functions) GetPreProcessorConfigValue(serverConnectionHandlerID uint64, ident string) (result string, retErrorCode uint32) {
+	identC := C.CString(ident)
+
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getPreProcessorConfigValue(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		&cResult,
+	))
+	if retErrorCode == 0 {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) SetPreProcessorConfigValue(serverConnectionHandlerID uint64, ident string, value string) (retErrorCode uint32) {
+	identC := C.CString(ident)
+	valueC := C.CString(value)
+
+	retErrorCode = uint32(C.setPreProcessorConfigValue(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		valueC,
+	))
+
+	return
+}
+
+func (this *TS3Functions) RequestSendPrivateTextMsg(serverConnectionHandlerID uint64, message string, targetClientID teamspeak.AnyID, customErrorIdentifier string) (retErrorCode uint32) {
+	messageC := C.CString(message)
+	var customErrorIdentifierC *C.char
+	if len(customErrorIdentifier) > 0 {
+		customErrorIdentifierC = C.CString(customErrorIdentifier)
+	}
+
+	retErrorCode = uint32(C.requestSendPrivateTextMsg(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		messageC,
+		C.anyID(targetClientID),
+		customErrorIdentifierC,
+	))
+
+	return
+}
+
+func (this *TS3Functions) RequestSendChannelTextMsg(serverConnectionHandlerID uint64, message string, targetChannelID uint64, customErrorIdentifier string) (retErrorCode uint32) {
+	messageC := C.CString(message)
+	var customErrorIdentifierC *C.char
+	if len(customErrorIdentifier) > 0 {
+		customErrorIdentifierC = C.CString(customErrorIdentifier)
+	}
+
+	retErrorCode = uint32(C.requestSendChannelTextMsg(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		messageC,
+		C.uint64(targetChannelID),
+		customErrorIdentifierC,
+	))
+
+	return
+}
