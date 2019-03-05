@@ -596,7 +596,7 @@ func ts3plugin_onEditCapturedVoiceDataEvent(serverConnectionHandlerID C.uint64, 
 		shouldMute := OnEditCapturedVoiceDataEvent(
 			uint64(serverConnectionHandlerID),
 			samplesGo,
-			(*edited|2) == 0, // check if bit 2 is unset (whether audio is muted)
+			(*edited&2) == 0, // check if bit 2 is unset (whether audio is muted)
 		)
 
 		if shouldMute {
