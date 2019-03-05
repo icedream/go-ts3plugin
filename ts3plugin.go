@@ -83,7 +83,7 @@ func (s *Samples) SetSamples(offset int, samples []int16) {
 		panic("Samples array must have a sample for each channel but does not.")
 	}
 	for i := offset; i < offset+len(samples); i++ {
-		s.samplesSlice[i] = C.short(samples[i])
+		s.samplesSlice[i] = C.short(samples[i-offset])
 	}
 	s.edited = true
 }
