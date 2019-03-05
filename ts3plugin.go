@@ -187,9 +187,9 @@ func ts3plugin_commandKeyword() *C.char {
 //export ts3plugin_processCommand
 func ts3plugin_processCommand(serverConnectionHandlerID C.uint64, command *C.char) C.int {
 	if ProcessCommand(uint64(serverConnectionHandlerID), C.GoString(command)) {
-		return 0
+		return 0 // handled
 	}
-	return 1
+	return 1 // not handled
 }
 
 //export ts3plugin_currentServerConnectionChanged
@@ -555,13 +555,40 @@ func ts3plugin_onSoundDeviceListChangedEvent(modeID *C.char, playOrCap C.int) {
 }
 
 //export ts3plugin_onEditPlaybackVoiceDataEvent
-func ts3plugin_onEditPlaybackVoiceDataEvent(serverConnectionHandlerID C.uint64, clientID C.anyID, samples *C.short, sampleCount C.int, channels C.int) {
-	notYetImplemented("ts3plugin_onEditPlaybackVoiceDataEvent")
+func ts3plugin_onEditPlaybackVoiceDataEvent(serverConnectionHandlerID C.uint64, samples *C.short, sampleCount C.int, channels C.int) {
+	if OnEditPlaybackVoiceDataEvent != nil {
+		samplesGo := newSamples(samples, sampleCount, channels)
+
+		OnEditPlaybackVoiceDataEvent(
+			uint64(serverConnectionHandlerID),
+			samplesGo,
+		)
+	}
 }
 
 //export ts3plugin_onEditPostProcessVoiceDataEvent
 func ts3plugin_onEditPostProcessVoiceDataEvent(serverConnectionHandlerID C.uint64, clientID C.anyID, samples *C.short, sampleCount C.int, channels C.int, channelSpeakerArray *C.uint, channelFillMask *C.uint) {
-	notYetImplemented("ts3plugin_onEditPostProcessVoiceDataEvent")
+	if OnEditPostProcessVoiceDataEvent != nil {
+		channelsGo := int(channels)
+		channelSpeakerSlice := make([]uint, channelsGo)
+		for i, value := range (*[1 << 28]C.uint)(unsafe.Pointer(channelSpeakerArray))[:channelsGo:channelsGo] {
+			channelSpeakerSlice[i] = uint(value)
+		}
+
+		channelFillMaskGo := uint(*channelFillMask)
+
+		samplesGo := newSamples(samples, sampleCount, channels)
+
+		OnEditPostProcessVoiceDataEvent(
+			uint64(serverConnectionHandlerID),
+			convertAnyIDToGo(clientID),
+			samplesGo,
+			channelSpeakerSlice,
+			&channelFillMaskGo,
+		)
+
+		*channelFillMask = C.uint(channelFillMaskGo)
+	}
 }
 
 //export ts3plugin_onEditMixedPlaybackVoiceDataEvent

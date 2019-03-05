@@ -31,7 +31,7 @@ var (
 	Shutdown                       func()
 	OffersConfigure                func() PluginConfigureOffer
 	Configure                      func(handle byte, qParentWidget byte)
-	ProcessCommand                 func(serverConnectionHandlerID uint64, command string) bool
+	ProcessCommand                 func(serverConnectionHandlerID uint64, command string) (handled bool)
 	CurrentServerConnectionChanged func(serverConnectionHandlerID uint64)
 
 	OnConnectedStatusChangeEvent      func(serverConnectionHandlerID uint64, newStatus int, errorNumber uint)
@@ -64,6 +64,8 @@ var (
 	OnEditCapturedVoiceDataEvent      func(serverConnectionHandlerID uint64, samples *Samples, isMuted bool) (shouldMute bool)
 	// TODO - use a speaker enum type?
 	OnEditMixedPlaybackVoiceDataEvent func(serverConnectionHandlerID uint64, samples *Samples, channelSpeakers []uint, channelFillMask *uint)
+	OnEditPlaybackVoiceDataEvent      func(serverConnectionHandlerID uint64, samples *Samples)
+	OnEditPostProcessVoiceDataEvent   func(serverConnectionHandlerID uint64, clientID teamspeak.AnyID, samples *Samples, channelSpeakers []uint, channelFillMask *uint)
 )
 
 var (
