@@ -1,5 +1,5 @@
-TeamSpeak 3 plugin development kit
-Copyright (c) 2008-2016 TeamSpeak Systems GmbH
+TeamSpeak 3 Plugin Software Development Kit
+Copyright (c) TeamSpeak Systems GmbH
 
 Contents
 - Demo plugin sourcecode as template for developing own plugins
@@ -20,5 +20,4 @@ We strongly recommend to build upon the test plugin. Plugins are required to exp
 which already exist in the test plugin. Optional functions may be removed if not used. See code comments
 for details.
 
-
-For questions please visit our forums at http://forum.teamspeak.com
+For questions please visit our forums at https://forum.teamspeak.com

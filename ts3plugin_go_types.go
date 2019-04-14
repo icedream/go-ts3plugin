@@ -9,7 +9,7 @@ import (
 
 var (
 	Name, Version, Author, Description string
-	ApiVersion                         int = 22
+	ApiVersion                         int = 24
 )
 
 var (

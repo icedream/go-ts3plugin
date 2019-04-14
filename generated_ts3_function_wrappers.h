@@ -836,10 +836,10 @@ unsigned int banclient(const struct TS3Functions funcs, uint64  serverConnection
 	return funcs.banclient(serverConnectionHandlerID, clientID, timeInSeconds, banReason, returnCode);
 }
 
-// unsigned int banadd(uint64  serverConnectionHandlerID, const char*  ipRegExp, const char*  nameRegexp, const char*  uniqueIdentity, uint64  timeInSeconds, const char*  banReason, const char*  returnCode)
-unsigned int banadd(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const char*  ipRegExp, const char*  nameRegexp, const char*  uniqueIdentity, uint64  timeInSeconds, const char*  banReason, const char*  returnCode) {
+// unsigned int banadd(uint64  serverConnectionHandlerID, const char*  ipRegExp, const char*  nameRegexp, const char*  uniqueIdentity, const char*  mytsID, uint64  timeInSeconds, const char*  banReason, const char*  returnCode)
+unsigned int banadd(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const char*  ipRegExp, const char*  nameRegexp, const char*  uniqueIdentity, const char*  mytsID, uint64  timeInSeconds, const char*  banReason, const char*  returnCode) {
 	
-	return funcs.banadd(serverConnectionHandlerID, ipRegExp, nameRegexp, uniqueIdentity, timeInSeconds, banReason, returnCode);
+	return funcs.banadd(serverConnectionHandlerID, ipRegExp, nameRegexp, uniqueIdentity, mytsID, timeInSeconds, banReason, returnCode);
 }
 
 // unsigned int banclientdbid(uint64  serverConnectionHandlerID, uint64  clientDBID, uint64  timeInSeconds, const char*  banReason, const char*  returnCode)
@@ -860,10 +860,10 @@ unsigned int bandelall(const struct TS3Functions funcs, uint64  serverConnection
 	return funcs.bandelall(serverConnectionHandlerID, returnCode);
 }
 
-// unsigned int requestBanList(uint64  serverConnectionHandlerID, const char*  returnCode)
-unsigned int requestBanList(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const char*  returnCode) {
+// unsigned int requestBanList(uint64  serverConnectionHandlerID, uint64  start, unsigned int  duration, const char*  returnCode)
+unsigned int requestBanList(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, uint64  start, unsigned int  duration, const char*  returnCode) {
 	
-	return funcs.requestBanList(serverConnectionHandlerID, returnCode);
+	return funcs.requestBanList(serverConnectionHandlerID, start, duration, returnCode);
 }
 
 // unsigned int requestComplainAdd(uint64  serverConnectionHandlerID, uint64  targetClientDatabaseID, const char*  complainReason, const char*  returnCode)
@@ -1254,5 +1254,101 @@ unsigned int getClientNeededPermission(const struct TS3Functions funcs, uint64  
 void notifyKeyEvent(const struct TS3Functions funcs, const char * pluginID, const char * keyIdentifier, int  up_down) {
 	
 	return funcs.notifyKeyEvent(pluginID, keyIdentifier, up_down);
+}
+
+// unsigned int startRecording(uint64  serverConnectionHandlerID, int  multitrack, int  noFileSelector, const char*  path)
+unsigned int startRecording(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, int  multitrack, int  noFileSelector, const char*  path) {
+	
+	return funcs.startRecording(serverConnectionHandlerID, multitrack, noFileSelector, path);
+}
+
+// unsigned int stopRecording(uint64  serverConnectionHandlerID)
+unsigned int stopRecording(const struct TS3Functions funcs, uint64  serverConnectionHandlerID) {
+	
+	return funcs.stopRecording(serverConnectionHandlerID);
+}
+
+// unsigned int requestClientsMove(uint64  serverConnectionHandlerID, const anyID*  clientIDArray, uint64  newChannelID, const char*  password, const char*  returnCode)
+unsigned int requestClientsMove(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const anyID*  clientIDArray, uint64  newChannelID, const char*  password, const char*  returnCode) {
+	
+	return funcs.requestClientsMove(serverConnectionHandlerID, clientIDArray, newChannelID, password, returnCode);
+}
+
+// unsigned int requestClientsKickFromChannel(uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  kickReason, const char*  returnCode)
+unsigned int requestClientsKickFromChannel(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  kickReason, const char*  returnCode) {
+	
+	return funcs.requestClientsKickFromChannel(serverConnectionHandlerID, clientIDArray, kickReason, returnCode);
+}
+
+// unsigned int requestClientsKickFromServer(uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  kickReason, const char*  returnCode)
+unsigned int requestClientsKickFromServer(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  kickReason, const char*  returnCode) {
+	
+	return funcs.requestClientsKickFromServer(serverConnectionHandlerID, clientIDArray, kickReason, returnCode);
+}
+
+// unsigned int requestMuteClientsTemporary(uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  returnCode)
+unsigned int requestMuteClientsTemporary(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  returnCode) {
+	
+	return funcs.requestMuteClientsTemporary(serverConnectionHandlerID, clientIDArray, returnCode);
+}
+
+// unsigned int requestUnmuteClientsTemporary(uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  returnCode)
+unsigned int requestUnmuteClientsTemporary(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const anyID*  clientIDArray, const char*  returnCode) {
+	
+	return funcs.requestUnmuteClientsTemporary(serverConnectionHandlerID, clientIDArray, returnCode);
+}
+
+// unsigned int getPermissionNameByID(uint64  scHandlerID, unsigned int  permissionID, char*  result, size_t  max_len)
+unsigned int getPermissionNameByID(const struct TS3Functions funcs, uint64  scHandlerID, unsigned int  permissionID, char*  result, size_t  max_len) {
+	
+	return funcs.getPermissionNameByID(scHandlerID, permissionID, result, max_len);
+}
+
+// unsigned int clientPropertyFlagToString(size_t  clientPropertyFlag, char**  resultString)
+unsigned int clientPropertyFlagToString(const struct TS3Functions funcs, size_t  clientPropertyFlag, char**  resultString) {
+	
+	return funcs.clientPropertyFlagToString(clientPropertyFlag, resultString);
+}
+
+// unsigned int channelPropertyFlagToString(size_t  channelPropertyFlag, char**  resultString)
+unsigned int channelPropertyFlagToString(const struct TS3Functions funcs, size_t  channelPropertyFlag, char**  resultString) {
+	
+	return funcs.channelPropertyFlagToString(channelPropertyFlag, resultString);
+}
+
+// unsigned int serverPropertyFlagToString(size_t  serverPropertyFlag, char**  resultString)
+unsigned int serverPropertyFlagToString(const struct TS3Functions funcs, size_t  serverPropertyFlag, char**  resultString) {
+	
+	return funcs.serverPropertyFlagToString(serverPropertyFlag, resultString);
+}
+
+// unsigned int setServerVariableAsInt(uint64  serverConnectionHandlerID, size_t  flag, int  value)
+unsigned int setServerVariableAsInt(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, size_t  flag, int  value) {
+	
+	return funcs.setServerVariableAsInt(serverConnectionHandlerID, flag, value);
+}
+
+// unsigned int setServerVariableAsUInt64(uint64  serverConnectionHandlerID, size_t  flag, uint64  value)
+unsigned int setServerVariableAsUInt64(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, size_t  flag, uint64  value) {
+	
+	return funcs.setServerVariableAsUInt64(serverConnectionHandlerID, flag, value);
+}
+
+// unsigned int setServerVariableAsDouble(uint64  serverConnectionHandlerID, size_t  flag, double  value)
+unsigned int setServerVariableAsDouble(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, size_t  flag, double  value) {
+	
+	return funcs.setServerVariableAsDouble(serverConnectionHandlerID, flag, value);
+}
+
+// unsigned int setServerVariableAsString(uint64  serverConnectionHandlerID, size_t  flag, const char*  value)
+unsigned int setServerVariableAsString(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, size_t  flag, const char*  value) {
+	
+	return funcs.setServerVariableAsString(serverConnectionHandlerID, flag, value);
+}
+
+// unsigned int flushServerUpdates(uint64  serverConnectionHandlerID, const char*  returnCode)
+unsigned int flushServerUpdates(const struct TS3Functions funcs, uint64  serverConnectionHandlerID, const char*  returnCode) {
+	
+	return funcs.flushServerUpdates(serverConnectionHandlerID, returnCode);
 }
 

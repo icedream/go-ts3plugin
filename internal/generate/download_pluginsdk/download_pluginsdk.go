@@ -98,13 +98,24 @@ func Unzip(src io.ReaderAt, size int64, dest string) ([]string, error) {
 		}
 		defer rc.Close()
 
-		// Store filename/path for returning and using later on
-		fpath := filepath.Join(dest, f.Name)
-
 		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
-		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
-			return filenames, fmt.Errorf("%s: illegal file path", fpath)
+		fname := filepath.Clean(f.Name)
+		fparts := strings.Split(fname, string(filepath.Separator))
+		for _, fpart := range fparts {
+			if fpart == ".." {
+				return filenames, fmt.Errorf("%s != %s: illegal file path", f.Name, fname)
+			}
 		}
+
+		// Store filename/path for returning and using later on
+		if len(fparts) > 1 {
+			fparts = fparts[1:]
+		} else {
+			fparts = []string{}
+		}
+		fname = filepath.Join(fparts...)
+		fpath := filepath.Join(dest, fname)
+		fmt.Println(fpath)
 
 		filenames = append(filenames, fpath)
 

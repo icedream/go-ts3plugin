@@ -199,14 +199,15 @@ var (
 	//time window in seconds for max command execution check
 	ServerInstancePropertyServerQueryFloodTime = ServerInstancePropertiesRare(C.SERVERINSTANCE_SERVERQUERY_FLOOD_TIME)
 	//how many seconds someone get banned if he floods
-	ServerInstancePropertyServerQueryBanTime          = ServerInstancePropertiesRare(C.SERVERINSTANCE_SERVERQUERY_BAN_TIME)
-	ServerInstancePropertyTemplateServerAdminGroup    = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_SERVERADMIN_GROUP)
-	ServerInstancePropertyTemplateServerDefaultGroup  = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_SERVERDEFAULT_GROUP)
-	ServerInstancePropertyTemplateChannelAdminGroup   = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_CHANNELADMIN_GROUP)
-	ServerInstancePropertyTemplateChannelDefaultGroup = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_CHANNELDEFAULT_GROUP)
-	ServerInstancePropertyPermissionsVersion          = ServerInstancePropertiesRare(C.SERVERINSTANCE_PERMISSIONS_VERSION)
-	ServerInstancePropertyPendingConnectionsPerIp     = ServerInstancePropertiesRare(C.SERVERINSTANCE_PENDING_CONNECTIONS_PER_IP)
-	ServerInstancePropertyEndMarkerRare               = ServerInstancePropertiesRare(C.SERVERINSTANCE_ENDMARKER_RARE)
+	ServerInstancePropertyServerQueryBanTime             = ServerInstancePropertiesRare(C.SERVERINSTANCE_SERVERQUERY_BAN_TIME)
+	ServerInstancePropertyTemplateServerAdminGroup       = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_SERVERADMIN_GROUP)
+	ServerInstancePropertyTemplateServerDefaultGroup     = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_SERVERDEFAULT_GROUP)
+	ServerInstancePropertyTemplateChannelAdminGroup      = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_CHANNELADMIN_GROUP)
+	ServerInstancePropertyTemplateChannelDefaultGroup    = ServerInstancePropertiesRare(C.SERVERINSTANCE_TEMPLATE_CHANNELDEFAULT_GROUP)
+	ServerInstancePropertyPermissionsVersion             = ServerInstancePropertiesRare(C.SERVERINSTANCE_PERMISSIONS_VERSION)
+	ServerInstancePropertyPendingConnectionsPerIP        = ServerInstancePropertiesRare(C.SERVERINSTANCE_PENDING_CONNECTIONS_PER_IP)
+	ServerInstancePropertyServerQueryMaxConnectionsPerIP = ServerInstancePropertiesRare(C.SERVERINSTANCE_SERVERQUERY_MAX_CONNECTIONS_PER_IP)
+	ServerInstancePropertyEndMarkerRare                  = ServerInstancePropertiesRare(C.SERVERINSTANCE_ENDMARKER_RARE)
 )
 
 type VirtualServerPropertiesRare uint8
@@ -216,8 +217,6 @@ func (value VirtualServerPropertiesRare) toC() C.enum_VirtualServerPropertiesRar
 }
 
 var (
-	VirtualServerPropertyDummy_0 = VirtualServerPropertiesRare(C.VIRTUALSERVER_DUMMY_0)
-
 	VirtualServerPropertyDummy_1 = VirtualServerPropertiesRare(C.VIRTUALSERVER_DUMMY_1)
 
 	VirtualServerPropertyDummy_2 = VirtualServerPropertiesRare(C.VIRTUALSERVER_DUMMY_2)
@@ -357,6 +356,14 @@ var (
 	VirtualServerPropertyMinIosVersion = VirtualServerPropertiesRare(C.VIRTUALSERVER_MIN_IOS_VERSION)
 	//only available on request (=> requestServerVariables)
 	VirtualServerPropertyMinWinPhoneVersion = VirtualServerPropertiesRare(C.VIRTUALSERVER_MIN_WINPHONE_VERSION)
+	//available when connected, always up-to-date
+	VirtualServerPropertyNickname = VirtualServerPropertiesRare(C.VIRTUALSERVER_NICKNAME)
+	//internal use | contains base64 encoded token data
+	VirtualServerPropertyAccountingToken = VirtualServerPropertiesRare(C.VIRTUALSERVER_ACCOUNTING_TOKEN)
+	//internal use
+	VirtualServerPropertyProtocolVerifyKeypair = VirtualServerPropertiesRare(C.VIRTUALSERVER_PROTOCOL_VERIFY_KEYPAIR)
+	//only available on request (=> requestServerVariables)
+	VirtualServerPropertyAntifloodPointsNeededPluginBlock = VirtualServerPropertiesRare(C.VIRTUALSERVER_ANTIFLOOD_POINTS_NEEDED_PLUGIN_BLOCK)
 
 	VirtualServerPropertyEndMarkerRare = VirtualServerPropertiesRare(C.VIRTUALSERVER_ENDMARKER_RARE)
 )
@@ -368,8 +375,6 @@ func (value ChannelPropertiesRare) toC() C.enum_ChannelPropertiesRare {
 }
 
 var (
-	ChannelPropertyDummy_2 = ChannelPropertiesRare(C.CHANNEL_DUMMY_2)
-
 	ChannelPropertyDummy_3 = ChannelPropertiesRare(C.CHANNEL_DUMMY_3)
 
 	ChannelPropertyDummy_4 = ChannelPropertiesRare(C.CHANNEL_DUMMY_4)
@@ -398,9 +403,15 @@ var (
 	//Available for all channels that are "in view", always up-to-date
 	ChannelPropertyIconId = ChannelPropertiesRare(C.CHANNEL_ICON_ID)
 	//Available for all channels that are "in view", always up-to-date
-	ChannelPropertyFlagPrivate = ChannelPropertiesRare(C.CHANNEL_FLAG_PRIVATE)
+	ChannelBannerGFXURL = ChannelPropertiesRare(C.CHANNEL_BANNER_GFX_URL)
+	//Available for all channels that are "in view", always up-to-date
+	ChannelBannerMode = ChannelPropertiesRare(C.CHANNEL_BANNER_MODE)
+
+	ChannelPermissionHints = ChannelPropertiesRare(C.CHANNEL_PERMISSION_HINTS)
 
 	ChannelPropertyEndMarkerRare = ChannelPropertiesRare(C.CHANNEL_ENDMARKER_RARE)
+	//(for clientlibv2) expected delete time in monotonic clock seconds or 0 if nothing is expected
+	ChannelPropertyDeleteDelayDeadline = ChannelPropertiesRare(C.CHANNEL_DELETE_DELAY_DEADLINE)
 )
 
 type ClientPropertiesRare uint8
@@ -410,8 +421,6 @@ func (value ClientPropertiesRare) toC() C.enum_ClientPropertiesRare {
 }
 
 var (
-	ClientPropertyDummy_3 = ClientPropertiesRare(C.CLIENT_DUMMY_3)
-
 	ClientPropertyDummy_4 = ClientPropertiesRare(C.CLIENT_DUMMY_4)
 
 	ClientPropertyDummy_5 = ClientPropertiesRare(C.CLIENT_DUMMY_5)
@@ -489,8 +498,23 @@ var (
 	ClientPropertyChannelGroupInheritedChannelId = ClientPropertiesRare(C.CLIENT_CHANNEL_GROUP_INHERITED_CHANNEL_ID)
 	//automatically up-to-date for any client "in view", stores icons for partner badges
 	ClientPropertyBadges = ClientPropertiesRare(C.CLIENT_BADGES)
+	//automatically up-to-date for any client "in view", stores icons for partner badges
+	ClientPropertyMyTeamSpeakID = ClientPropertiesRare(C.CLIENT_MYTEAMSPEAK_ID)
+	//automatically up-to-date for any client "in view", stores icons for partner badges
+	ClientPropertyIntegrations = ClientPropertiesRare(C.CLIENT_INTEGRATIONS)
+	//stores info from the myts server and contains the subscription info
+	ClientPropertyActiveIntegrationsInfo = ClientPropertiesRare(C.CLIENT_ACTIVE_INTEGRATIONS_INFO)
+
+	ClientMyTeamSpeakAvatar = ClientPropertiesRare(C.CLIENT_MYTS_AVATAR)
+
+	ClientSignedBadges = ClientPropertiesRare(C.CLIENT_SIGNED_BADGES)
+
+	ClientPemrissionHints = ClientPropertiesRare(C.CLIENT_PERMISSION_HINTS)
 
 	ClientPropertyEndMarkerRare = ClientPropertiesRare(C.CLIENT_ENDMARKER_RARE)
+
+	//(for clientlibv2) unique hardware id
+	ClientPropertyHardwareID = ClientPropertiesRare(C.CLIENT_HW_ID)
 )
 
 type ConnectionPropertiesRare uint8
@@ -531,18 +555,6 @@ var (
 	ConnectionPropertyEndMarkerRare = ConnectionPropertiesRare(C.CONNECTION_ENDMARKER_RARE)
 )
 
-type LicenseViolationType uint8
-
-func (value LicenseViolationType) toC() C.enum_LicenseViolationType {
-	return C.enum_LicenseViolationType(value)
-}
-
-var (
-	NoViolation   = LicenseViolationType(C.NO_VIOLATION)
-	SlotViolation = LicenseViolationType(C.SLOT_VIOLATION)
-	SlotSuspicion = LicenseViolationType(C.SLOT_SUSPICION)
-)
-
 type BBCodeTag uint32
 
 func (value BBCodeTag) toC() C.enum_BBCodeTags {
@@ -577,6 +589,31 @@ var (
 	BBCodeTagDefSimple    = BBCodeTag(C.BBCodeTag_def_simple)
 	BBCodeTagDefSimpleImg = BBCodeTag(C.BBCodeTag_def_simple_Img)
 	BBCodeTagDefExtended  = BBCodeTag(C.BBCodeTag_def_extended)
+)
+
+type LicenseIssue uint8
+
+func (value LicenseIssue) toC() C.enum_LicenseIssue {
+	return C.enum_LicenseIssue(value)
+}
+
+var (
+	Blacklisted = LicenseIssue(C.Blacklisted)
+	Greylisted  = LicenseIssue(C.Greylisted)
+)
+
+type MyTeamSpeakDataUnsetFlags uint8
+
+func (value MyTeamSpeakDataUnsetFlags) toC() C.enum_MytsDataUnsetFlags {
+	return C.enum_MytsDataUnsetFlags(value)
+}
+
+var (
+	MyTeamSpeakDataUnsetFlagNone   = MyTeamSpeakDataUnsetFlags(C.MytsDataUnsetFlag_None)
+	MyTeamSpeakDataUnsetFlagBadges = MyTeamSpeakDataUnsetFlags(C.MytsDataUnsetFlag_Badges)
+	MyTeamSpeakDataUnsetFlagAvatar = MyTeamSpeakDataUnsetFlags(C.MytsDataUnsetFlag_Avatar)
+
+	MyTeamSpeakDataUnsetFlagAll = MyTeamSpeakDataUnsetFlags(C.MytsDataUnsetFlag_All)
 )
 
 // typedef int(*ExtraBBCodeValidator)(void* userparam, const char* tag, const char* paramValue, int paramValueSize, const char* childValue, int childValueSize); // TODO
