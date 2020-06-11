@@ -1,0 +1,30 @@
+{
+	"FixedFileInfo": {
+		"FileVersion": {
+			"Major": 0,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 0
+		},
+		"ProductVersion": {
+			"Major": 0,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 0
+		}
+	},
+	"StringFileInfo": {
+		"Comments": "",
+		"CompanyName": "Carl Kittelberger",
+		"FileDescription": "Example plugin for TeamSpeak client version 3 written in Go.",
+		"FileVersion": "0.0.0",
+		"InternalName": "example",
+		"LegalCopyright": "© 2018 Carl Kittelberger",
+		"LegalTrademarks": "",
+		"OriginalFilename": "example",
+		"PrivateBuild": "",
+		"ProductName": "Test TeamSpeak3 plugin",
+		"ProductVersion": "0.0.0",
+		"SpecialBuild": ""
+	}
+}
