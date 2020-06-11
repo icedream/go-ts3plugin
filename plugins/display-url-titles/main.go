@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"runtime/debug"
-	"time"
 
 	"mvdan.cc/xurls/v2"
 
@@ -18,21 +16,11 @@ import (
 	"github.com/icedream/go-ts3plugin/teamspeak"
 )
 
-var (
-	Name    = "Test Go Plugin"
+const (
+	Name    = "Display URL titles"
 	Author  = "Carl Kittelberger"
 	Version = "0.0.0"
 )
-
-func catchPanic() {
-	if err := recover(); err != nil {
-		if ts3plugin.Functions() != nil {
-			log(fmt.Sprintf("%s\n%s",
-				err,
-				string(debug.Stack())), teamlog.Critical)
-		}
-	}
-}
 
 func log(msg string, severity teamlog.LogLevel) {
 	ts3plugin.Functions().LogMessage(
@@ -107,49 +95,6 @@ func init() {
 		}
 
 		return 0
-	}
-
-	ts3plugin.OnUserLoggingMessageEvent = func(logMessage string, logLevel teamlog.LogLevel, logChannel string, logID uint64, logTime time.Time, completeLogString string) {
-		// Print all log messages to the current chat tab
-		ts3plugin.Functions().PrintMessageToCurrentTab(
-			fmt.Sprintf("[COLOR=gray]%s: [I]%s[/I]\t%s\t[B]%s[/B]\t%s[/COLOR]",
-				Name,
-				logTime,
-				logLevel,
-				logChannel,
-				logMessage))
-	}
-
-	ts3plugin.Init = func() (ok bool) {
-		defer catchPanic()
-
-		version, errCode := ts3plugin.Functions().GetClientLibVersion()
-		if errCode == teamspeak.ErrorOK {
-			log(
-				fmt.Sprintf("TS3::Init - plugin ID %s running on %s!",
-					ts3plugin.GetPluginID(),
-					version),
-				teamlog.Debug)
-			ok = true
-		} else {
-			msg := ""
-			if errMsg, errCode2 := ts3plugin.Functions().GetErrorMessage(errCode); errCode2 == 0 {
-				msg = errMsg
-			} else {
-				msg = fmt.Sprintf("Error code %d", errCode)
-			}
-			log(
-				fmt.Sprintf("Could not get client lib version: %s",
-					msg),
-				teamlog.Critical)
-		}
-
-		return
-	}
-
-	ts3plugin.Shutdown = func() {
-		defer catchPanic()
-		ts3plugin.Functions().LogMessage("TS3::Shutdown", teamlog.Debug, Name, 0)
 	}
 }
 

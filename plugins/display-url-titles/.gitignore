@@ -22,3 +22,5 @@ _testmain.go
 *.dll
 *.exe
 *.test
+
+display-url-titles
