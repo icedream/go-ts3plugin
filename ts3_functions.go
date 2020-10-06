@@ -12,6 +12,7 @@ package ts3plugin
 import "C"
 
 import (
+	"math"
 	"unsafe"
 
 	"github.com/icedream/go-ts3plugin/teamlog"
@@ -87,6 +88,262 @@ func (this *TS3Functions) LogMessage(logMessage string, severity teamlog.LogLeve
 
 	retErrorCode = uint32(C.logMessage(this.nativeFunctions, cLogMessage,
 		uint32(severity), cChannel, C.uint64(logID)))
+
+	return
+}
+
+func (this *TS3Functions) GetPlaybackDeviceList(modeID string) (result [][]string, retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	// actually [][]*C.char
+	cResult := (***C.char)(nil)
+
+	retErrorCode = uint32(C.getPlaybackDeviceList(this.nativeFunctions,
+		cModeID, &cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// ***C.char => []**C.char
+		// find correct length
+		for len := 1; len < math.MaxInt32; len++ {
+			/*
+				var theCArray *C.YourType = C.getTheArray()
+				length := C.getTheArrayLength()
+				slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+				C.YourType = **C.char
+			*/
+			cResultSlice := (*[1 << 28]**C.char)(unsafe.Pointer(cResult))[:len:len]
+			if cResultSlice[len-1] != nil {
+				continue
+			}
+			len--
+			cResultSlice = cResultSlice[0:len]
+
+			// **C.char => []*C.char
+			result = make([][]string, len)
+			for i, cResultItem := range cResultSlice {
+				// assume 2 *C.char here due to how device lists work
+				cResultItemSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResultItem))[:2:2]
+				// *C.char => string
+				result[i] = []string{
+					C.GoString(cResultItemSlice[0]),
+					C.GoString(cResultItemSlice[1]),
+				}
+			}
+			break
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetPlaybackModeList() (result []string, retErrorCode uint32) {
+	// actually []*C.char
+	cResult := (**C.char)(nil)
+
+	retErrorCode = uint32(C.getPlaybackModeList(this.nativeFunctions,
+		&cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// **C.char => []*C.char
+		// find correct length
+		for len := 1; len < math.MaxInt32; len++ {
+			/*
+				var theCArray *C.YourType = C.getTheArray()
+				length := C.getTheArrayLength()
+				slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+				C.YourType = *C.char
+			*/
+			cResultSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResult))[:len:len]
+			if cResultSlice[len-1] != nil {
+				continue
+			}
+			len--
+			cResultSlice = cResultSlice[0:len]
+
+			// *C.char => string
+			result = make([]string, len)
+			for i, cResultItem := range cResultSlice {
+				result[i] = C.GoString(cResultItem)
+			}
+			break
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetCaptureDeviceList(modeID string) (result [][]string, retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	// actually [][]*C.char
+	cResult := (***C.char)(nil)
+
+	retErrorCode = uint32(C.getCaptureDeviceList(this.nativeFunctions,
+		cModeID, &cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// ***C.char => []**C.char
+		// find correct length
+		for len := 1; len < math.MaxInt32; len++ {
+			/*
+				var theCArray *C.YourType = C.getTheArray()
+				length := C.getTheArrayLength()
+				slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+				C.YourType = **C.char
+			*/
+			cResultSlice := (*[1 << 28]**C.char)(unsafe.Pointer(cResult))[:len:len]
+			if cResultSlice[len-1] != nil {
+				continue
+			}
+			len--
+			cResultSlice = cResultSlice[0:len]
+
+			// **C.char => []*C.char
+			result = make([][]string, len)
+			for i, cResultItem := range cResultSlice {
+				// assume 2 *C.char here due to how device lists work
+				cResultItemSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResultItem))[:2:2]
+				// *C.char => string
+				result[i] = []string{
+					C.GoString(cResultItemSlice[0]),
+					C.GoString(cResultItemSlice[1]),
+				}
+			}
+			break
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetCaptureModeList() (result []string, retErrorCode uint32) {
+	// actually []*C.char
+	cResult := (**C.char)(nil)
+
+	retErrorCode = uint32(C.getCaptureModeList(this.nativeFunctions,
+		&cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// **C.char => []*C.char
+		// find correct length
+		for len := 1; len < math.MaxInt32; len++ {
+			/*
+				var theCArray *C.YourType = C.getTheArray()
+				length := C.getTheArrayLength()
+				slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+				C.YourType = *C.char
+			*/
+			cResultSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResult))[:len:len]
+			if cResultSlice[len-1] != nil {
+				continue
+			}
+			len--
+			cResultSlice = cResultSlice[0:len]
+
+			// *C.char => string
+			result = make([]string, len)
+			for i, cResultItem := range cResultSlice {
+				result[i] = C.GoString(cResultItem)
+			}
+			break
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetDefaultPlaybackDevice(modeID string) (result []string, retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	// actually []*C.char
+	cResult := (**C.char)(nil)
+
+	retErrorCode = uint32(C.getDefaultPlaybackDevice(this.nativeFunctions,
+		cModeID, &cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// **C.char => []*C.char
+		// assume length of 2 for device description
+		/*
+			var theCArray *C.YourType = C.getTheArray()
+			length := C.getTheArrayLength()
+			slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+			C.YourType = *C.char
+		*/
+		cResultSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResult))[:2:2]
+
+		// *C.char => string
+		result = make([]string, len(cResultSlice))
+		for i, cResultItem := range cResultSlice {
+			result[i] = C.GoString(cResultItem)
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetDefaultPlayBackMode() (result string, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getDefaultPlayBackMode(this.nativeFunctions, &cResult))
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetDefaultCaptureDevice(modeID string) (result []string, retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	// actually []*C.char
+	cResult := (**C.char)(nil)
+
+	retErrorCode = uint32(C.getDefaultCaptureDevice(this.nativeFunctions,
+		cModeID, &cResult))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		// **C.char => []*C.char
+		// assume length of 2 for device description
+		/*
+			var theCArray *C.YourType = C.getTheArray()
+			length := C.getTheArrayLength()
+			slice := (*[1 << 28]C.YourType)(unsafe.Pointer(theCArray))[:length:length]
+
+			C.YourType = *C.char
+		*/
+		cResultSlice := (*[1 << 28]*C.char)(unsafe.Pointer(cResult))[:2:2]
+
+		// *C.char => string
+		result = make([]string, len(cResultSlice))
+		for i, cResultItem := range cResultSlice {
+			result[i] = C.GoString(cResultItem)
+		}
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetDefaultCaptureMode() (result string, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getDefaultCaptureMode(this.nativeFunctions, &cResult))
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+	}
 
 	return
 }
