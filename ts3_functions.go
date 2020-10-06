@@ -130,7 +130,11 @@ func (this *TS3Functions) GetPlaybackDeviceList(modeID string) (result [][]strin
 					C.GoString(cResultItemSlice[0]),
 					C.GoString(cResultItemSlice[1]),
 				}
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItemSlice[0]))
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItemSlice[1]))
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 			}
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 			break
 		}
 	}
@@ -167,7 +171,9 @@ func (this *TS3Functions) GetPlaybackModeList() (result []string, retErrorCode u
 			result = make([]string, len)
 			for i, cResultItem := range cResultSlice {
 				result[i] = C.GoString(cResultItem)
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 			}
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 			break
 		}
 	}
@@ -213,7 +219,11 @@ func (this *TS3Functions) GetCaptureDeviceList(modeID string) (result [][]string
 					C.GoString(cResultItemSlice[0]),
 					C.GoString(cResultItemSlice[1]),
 				}
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItemSlice[0]))
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItemSlice[1]))
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 			}
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 			break
 		}
 	}
@@ -250,7 +260,9 @@ func (this *TS3Functions) GetCaptureModeList() (result []string, retErrorCode ui
 			result = make([]string, len)
 			for i, cResultItem := range cResultSlice {
 				result[i] = C.GoString(cResultItem)
+				C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 			}
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 			break
 		}
 	}
@@ -284,7 +296,9 @@ func (this *TS3Functions) GetDefaultPlaybackDevice(modeID string) (result []stri
 		result = make([]string, len(cResultSlice))
 		for i, cResultItem := range cResultSlice {
 			result[i] = C.GoString(cResultItem)
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 		}
+		C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 	}
 
 	return
@@ -329,7 +343,9 @@ func (this *TS3Functions) GetDefaultCaptureDevice(modeID string) (result []strin
 		result = make([]string, len(cResultSlice))
 		for i, cResultItem := range cResultSlice {
 			result[i] = C.GoString(cResultItem)
+			C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResultItem))
 		}
+		C.freeMemory(this.nativeFunctions, unsafe.Pointer(cResult))
 	}
 
 	return
