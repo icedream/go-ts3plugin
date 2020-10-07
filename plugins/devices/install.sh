@@ -4,4 +4,5 @@ pluginname="devices-example-ts3plugin"
 mkdir -p "${ts3dir}/plugins"
 go build \
     -buildmode=c-shared \
-    -o "${ts3dir}/plugins/${pluginname}.so"
+    -o "${ts3dir}/plugins/${pluginname}.so" \
+    "$@"
