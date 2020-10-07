@@ -364,6 +364,189 @@ func (this *TS3Functions) GetDefaultCaptureMode() (result string, retErrorCode u
 	return
 }
 
+func (this *TS3Functions) OpenPlaybackDevice(serverConnectionHandlerID uint64, modeID, playbackDevice string) (retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	cPlaybackDevice := C.CString(playbackDevice)
+	defer C.free(unsafe.Pointer(cPlaybackDevice))
+
+	retErrorCode = uint32(C.openPlaybackDevice(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		cModeID,
+		cPlaybackDevice))
+	return
+}
+
+func (this *TS3Functions) OpenCaptureDevice(serverConnectionHandlerID uint64, modeID, playbackDevice string) (retErrorCode uint32) {
+	cModeID := C.CString(modeID)
+	defer C.free(unsafe.Pointer(cModeID))
+
+	cPlaybackDevice := C.CString(playbackDevice)
+	defer C.free(unsafe.Pointer(cPlaybackDevice))
+
+	retErrorCode = uint32(C.openCaptureDevice(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		cModeID,
+		cPlaybackDevice))
+	return
+}
+
+func (this *TS3Functions) GetCurrentPlaybackDeviceName(serverConnectionHandlerID uint64) (result string, isDefault bool, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	cIsDefault := C.int(0)
+
+	retErrorCode = uint32(C.getCurrentPlaybackDeviceName(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		&cResult,
+		&cIsDefault))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+		isDefault = cIsDefault != 0
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetCurrentPlayBackMode(serverConnectionHandlerID uint64) (result string, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getCurrentPlayBackMode(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		&cResult))
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetCurrentCaptureDeviceName(serverConnectionHandlerID uint64) (result string, isDefault bool, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	cIsDefault := C.int(0)
+
+	retErrorCode = uint32(C.getCurrentCaptureDeviceName(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		&cResult,
+		&cIsDefault))
+
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+		isDefault = cIsDefault != 0
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetCurrentCaptureMode(serverConnectionHandlerID uint64) (result string, retErrorCode uint32) {
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getCurrentCaptureMode(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		&cResult))
+	if retErrorCode == teamspeak.ErrorOK {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) InitiateGracefulPlaybackShutdown(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.initiateGracefulPlaybackShutdown(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+	return
+}
+
+func (this *TS3Functions) ClosePlaybackDevice(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.closePlaybackDevice(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+	return
+}
+
+func (this *TS3Functions) CloseCaptureDevice(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.closeCaptureDevice(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+	return
+}
+
+func (this *TS3Functions) ActivateCaptureDevice(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.activateCaptureDevice(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+	return
+}
+
+func (this *TS3Functions) RegisterCustomDevice(deviceID, deviceDisplayName string, capFrequency, capChannels, playFrequency, playChannels int) (retErrorCode uint32) {
+	cDeviceID := C.CString(deviceID)
+	defer C.free(unsafe.Pointer(cDeviceID))
+
+	cDeviceDisplayName := C.CString(deviceDisplayName)
+	defer C.free(unsafe.Pointer(cDeviceDisplayName))
+
+	retErrorCode = uint32(C.registerCustomDevice(this.nativeFunctions,
+		cDeviceID,
+		cDeviceDisplayName,
+		C.int(capFrequency),
+		C.int(capChannels),
+		C.int(playFrequency),
+		C.int(playChannels)))
+	return
+}
+
+func (this *TS3Functions) UnregisterCustomDevice(deviceID string) (retErrorCode uint32) {
+	cDeviceID := C.CString(deviceID)
+	defer C.free(unsafe.Pointer(cDeviceID))
+
+	retErrorCode = uint32(C.unregisterCustomDevice(this.nativeFunctions,
+		cDeviceID))
+	return
+}
+
+func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlice []int16) (retErrorCode uint32) {
+	cDeviceName := C.CString(deviceName)
+	defer C.free(unsafe.Pointer(cDeviceName))
+
+	cBufferSlice := make([]C.short, len(sampleSlice))
+	for i, sample := range sampleSlice {
+		cBufferSlice[i] = C.short(sample)
+	}
+
+	cSamples := C.int(len(cBufferSlice))
+
+	retErrorCode = uint32(C.processCustomCaptureData(this.nativeFunctions,
+		cDeviceName, &cBufferSlice[0], cSamples))
+
+	return
+}
+
+func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSlice []int16) (retErrorCode uint32) {
+	cDeviceName := C.CString(deviceName)
+	defer C.free(unsafe.Pointer(cDeviceName))
+
+	cBufferSlice := make([]C.short, len(sampleSlice))
+
+	cSamples := C.int(len(cBufferSlice))
+
+	retErrorCode = uint32(C.processCustomCaptureData(this.nativeFunctions,
+		cDeviceName, &cBufferSlice[0], cSamples))
+
+	for i, sample := range cBufferSlice {
+		sampleSlice[i] = int16(sample)
+	}
+
+	return
+}
+
 func (this *TS3Functions) PrintMessage(serverConnectionHandlerID uint64, message string, messageTarget PluginMessageTarget) {
 	messageC := C.CString(message)
 	defer C.free(unsafe.Pointer(messageC))
@@ -378,6 +561,23 @@ func (this *TS3Functions) PrintMessageToCurrentTab(message string) {
 	defer C.free(unsafe.Pointer(messageC))
 
 	C.printMessageToCurrentTab(this.nativeFunctions, messageC)
+
+	return
+}
+
+func (this *TS3Functions) GetPreProcessorInfoValueFloat(serverConnectionHandlerID uint64, ident string) (result float64, retErrorCode uint32) {
+	identC := C.CString(ident)
+
+	cResult := C.float(0)
+
+	retErrorCode = uint32(C.getPreProcessorInfoValueFloat(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		&cResult,
+	))
+	if retErrorCode == 0 {
+		result = float64(cResult)
+	}
 
 	return
 }
@@ -410,6 +610,128 @@ func (this *TS3Functions) SetPreProcessorConfigValue(serverConnectionHandlerID u
 		identC,
 		valueC,
 	))
+
+	return
+}
+
+func (this *TS3Functions) GetEncodeConfigValue(serverConnectionHandlerID uint64, ident string) (result string, retErrorCode uint32) {
+	identC := C.CString(ident)
+
+	// create buffer for teamspeak code to write to
+	cResult := (*C.char)(C.malloc(2 * 1024))
+	defer C.free(unsafe.Pointer(cResult))
+
+	retErrorCode = uint32(C.getEncodeConfigValue(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		&cResult,
+	))
+	if retErrorCode == 0 {
+		result = C.GoString(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) GetPlaybackConfigValueAsFloat(serverConnectionHandlerID uint64, ident string) (result float64, retErrorCode uint32) {
+	identC := C.CString(ident)
+
+	cResult := C.float(0)
+
+	retErrorCode = uint32(C.getPlaybackConfigValueAsFloat(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		&cResult,
+	))
+	if retErrorCode == 0 {
+		result = float64(cResult)
+	}
+
+	return
+}
+
+func (this *TS3Functions) SetPlaybackConfigValue(serverConnectionHandlerID uint64, ident string, value string) (retErrorCode uint32) {
+	identC := C.CString(ident)
+	valueC := C.CString(value)
+
+	retErrorCode = uint32(C.setPlaybackConfigValue(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		identC,
+		valueC,
+	))
+
+	return
+}
+
+// TODO - setClientVolumeModifier
+
+func (this *TS3Functions) StartVoiceRecording(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.startVoiceRecording(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+
+	return
+}
+
+func (this *TS3Functions) StopVoiceRecording(serverConnectionHandlerID uint64) (retErrorCode uint32) {
+	retErrorCode = uint32(C.stopVoiceRecording(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID)))
+
+	return
+}
+
+// TODO - systemset3DListenerAttributes
+// TODO - set3DWaveAttributes
+// TODO - systemset3DSettings
+// TODO - channelset3DAttributes
+
+func (this *TS3Functions) StartConnection(
+	serverConnectionHandlerID uint64,
+	identity string,
+	ip string,
+	port uint32,
+	nickname string,
+	defaultChannelArray []string,
+	defaultChannelPassword string,
+	serverPassword string,
+) (retErrorCode uint32) {
+	cIdentity := C.CString(identity)
+
+	cIP := C.CString(ip)
+
+	cNickname := C.CString(nickname)
+
+	cDefaultChannelArraySlice := make([]*C.char, len(defaultChannelArray)+1)
+	for i, value := range defaultChannelArray {
+		cDefaultChannelArraySlice[i] = C.CString(value)
+	}
+	cDefaultChannelArray := &cDefaultChannelArraySlice[0]
+
+	cDefaultChannelPassword := C.CString(defaultChannelPassword)
+
+	cServerPassword := C.CString(serverPassword)
+
+	retErrorCode = uint32(C.startConnection(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		cIdentity,
+		cIP,
+		C.uint(port),
+		cNickname,
+		cDefaultChannelArray,
+		cDefaultChannelPassword,
+		cServerPassword))
+
+	return
+}
+
+func (this *TS3Functions) StopConnection(
+	serverConnectionHandlerID uint64,
+	quitMessage string,
+) (retErrorCode uint32) {
+	cQuitMessage := C.CString(quitMessage)
+
+	retErrorCode = uint32(C.stopConnection(this.nativeFunctions,
+		C.uint64(serverConnectionHandlerID),
+		cQuitMessage))
 
 	return
 }
