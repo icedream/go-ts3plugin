@@ -512,7 +512,7 @@ func (this *TS3Functions) UnregisterCustomDevice(deviceID string) (retErrorCode 
 	return
 }
 
-func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlice []int16) (retErrorCode uint32) {
+func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlice []int16, samples int) (retErrorCode uint32) {
 	cDeviceName := C.CString(deviceName)
 	defer C.free(unsafe.Pointer(cDeviceName))
 
@@ -521,7 +521,7 @@ func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlic
 		cBufferSlice[i] = C.short(sample)
 	}
 
-	cSamples := C.int(len(cBufferSlice))
+	cSamples := C.int(samples)
 
 	retErrorCode = uint32(C.processCustomCaptureData(this.nativeFunctions,
 		cDeviceName, &cBufferSlice[0], cSamples))
@@ -529,13 +529,13 @@ func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlic
 	return
 }
 
-func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSlice []int16) (retErrorCode uint32) {
+func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSlice []int16, samples int) (retErrorCode uint32) {
 	cDeviceName := C.CString(deviceName)
 	defer C.free(unsafe.Pointer(cDeviceName))
 
 	cBufferSlice := make([]C.short, len(sampleSlice), len(sampleSlice))
 
-	cSamples := C.int(len(cBufferSlice))
+	cSamples := C.int(samples)
 
 	retErrorCode = uint32(C.acquireCustomPlaybackData(this.nativeFunctions,
 		cDeviceName, &cBufferSlice[0], cSamples))
