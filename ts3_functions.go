@@ -516,7 +516,7 @@ func (this *TS3Functions) ProcessCustomCaptureData(deviceName string, sampleSlic
 	cDeviceName := C.CString(deviceName)
 	defer C.free(unsafe.Pointer(cDeviceName))
 
-	cBufferSlice := make([]C.short, len(sampleSlice))
+	cBufferSlice := make([]C.short, len(sampleSlice), len(sampleSlice))
 	for i, sample := range sampleSlice {
 		cBufferSlice[i] = C.short(sample)
 	}
@@ -533,7 +533,7 @@ func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSli
 	cDeviceName := C.CString(deviceName)
 	defer C.free(unsafe.Pointer(cDeviceName))
 
-	cBufferSlice := make([]C.short, len(sampleSlice))
+	cBufferSlice := make([]C.short, len(sampleSlice), len(sampleSlice))
 
 	cSamples := C.int(len(cBufferSlice))
 
