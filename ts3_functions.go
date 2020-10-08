@@ -537,7 +537,7 @@ func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSli
 
 	cSamples := C.int(len(cBufferSlice))
 
-	retErrorCode = uint32(C.processCustomCaptureData(this.nativeFunctions,
+	retErrorCode = uint32(C.acquireCustomPlaybackData(this.nativeFunctions,
 		cDeviceName, &cBufferSlice[0], cSamples))
 
 	for i, sample := range cBufferSlice {
