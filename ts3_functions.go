@@ -540,8 +540,10 @@ func (this *TS3Functions) AcquireCustomPlaybackData(deviceName string, sampleSli
 	retErrorCode = uint32(C.acquireCustomPlaybackData(this.nativeFunctions,
 		cDeviceName, &cBufferSlice[0], cSamples))
 
-	for i, sample := range cBufferSlice {
-		sampleSlice[i] = int16(sample)
+	if retErrorCode == teamspeak.ErrorOK {
+		for i, sample := range cBufferSlice {
+			sampleSlice[i] = int16(sample)
+		}
 	}
 
 	return
