@@ -17,7 +17,7 @@ const int define_TS3_MAX_SIZE_CHANNEL_DESCRIPTION          = TS3_MAX_SIZE_CHANNE
 const int define_TS3_MAX_SIZE_VIRTUALSERVER_WELCOMEMESSAGE = TS3_MAX_SIZE_VIRTUALSERVER_WELCOMEMESSAGE;
 const int define_TS3_MIN_SECONDS_CLIENTID_REUSE            = TS3_MIN_SECONDS_CLIENTID_REUSE;
 const int define_MAX_VARIABLES_EXPORT_COUNT                = MAX_VARIABLES_EXPORT_COUNT;
-const unsigned long long define_BANDWIDTH_LIMIT_UNLIMITED  = BANDWIDTH_LIMIT_UNLIMITED;
+const long long define_BANDWIDTH_LIMIT_UNLIMITED           = BANDWIDTH_LIMIT_UNLIMITED;
 const unsigned long define_SPEAKER_FRONT_LEFT              = SPEAKER_FRONT_LEFT;
 const unsigned long define_SPEAKER_FRONT_RIGHT             = SPEAKER_FRONT_RIGHT;
 const unsigned long define_SPEAKER_FRONT_CENTER            = SPEAKER_FRONT_CENTER;
@@ -742,7 +742,7 @@ var (
 
 /*define for file transfer bandwith limits*/
 var (
-	BandwidthLimitUnlimited = uint64(C.define_BANDWIDTH_LIMIT_UNLIMITED)
+	BandwidthLimitUnlimited = int64(C.define_BANDWIDTH_LIMIT_UNLIMITED)
 )
 
 /*defines for speaker locations used by some sound callbacks*/
