@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/icedream/go-ts3plugin v0.0.0
-	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0
+	golang.org/x/net v0.0.0-20210610132358-84b48f89b13b
 	mvdan.cc/xurls/v2 v2.2.0
 )
 
