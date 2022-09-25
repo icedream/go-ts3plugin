@@ -1,6 +1,6 @@
 module github.com/icedream/go-ts3plugin/plugins/display-url-titles
 
-go 1.14
+go 1.19
 
 require (
 	github.com/icedream/go-ts3plugin v0.0.0

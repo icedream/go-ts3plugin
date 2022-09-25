@@ -1,3 +1,3 @@
 module github.com/icedream/go-ts3plugin
 
-go 1.14
+go 1.19
