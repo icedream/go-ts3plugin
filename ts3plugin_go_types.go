@@ -2,6 +2,7 @@ package ts3plugin
 
 import (
 	"time"
+	"unsafe"
 
 	"github.com/icedream/go-ts3plugin/teamlog"
 	"github.com/icedream/go-ts3plugin/teamspeak"
@@ -30,7 +31,7 @@ var (
 	Init                           func() (ok bool)
 	Shutdown                       func()
 	OffersConfigure                func() PluginConfigureOffer
-	Configure                      func(handle byte, qParentWidget byte)
+	Configure                      func(handle, qParentWidget unsafe.Pointer)
 	ProcessCommand                 func(serverConnectionHandlerID uint64, command string) (handled bool)
 	CurrentServerConnectionChanged func(serverConnectionHandlerID uint64)
 

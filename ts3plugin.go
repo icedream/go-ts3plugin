@@ -17,6 +17,7 @@ typedef struct TS3Functions TS3Functions;
 
 */
 import "C"
+
 import (
 	"fmt"
 	"time"
@@ -169,7 +170,7 @@ func ts3plugin_offersConfigure() C.int {
 
 //export ts3plugin_configure
 func ts3plugin_configure(handle *C.char, qParentWidget *C.char) {
-	notYetImplemented("ts3plugin_configure")
+	Configure(unsafe.Pointer(handle), unsafe.Pointer(qParentWidget))
 }
 
 //export ts3plugin_registerPluginID
