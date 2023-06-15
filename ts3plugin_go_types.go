@@ -2,6 +2,7 @@ package ts3plugin
 
 import (
 	"time"
+	"unsafe"
 
 	"github.com/icedream/go-ts3plugin/teamlog"
 	"github.com/icedream/go-ts3plugin/teamspeak"
@@ -17,20 +18,16 @@ var (
 	InfoTitle      string
 )
 
-var (
-	RequestAutoload = false
-)
+var RequestAutoload = false
 
-var (
-	// Will be set by TeamSpeak after plugin is loaded.
-	pluginID string
-)
+// Will be set by TeamSpeak after plugin is loaded.
+var pluginID string
 
 var (
 	Init                           func() (ok bool)
 	Shutdown                       func()
 	OffersConfigure                func() PluginConfigureOffer
-	Configure                      func(handle byte, qParentWidget byte)
+	Configure                      func(handle, qParentWidget unsafe.Pointer)
 	ProcessCommand                 func(serverConnectionHandlerID uint64, command string) (handled bool)
 	CurrentServerConnectionChanged func(serverConnectionHandlerID uint64)
 
@@ -68,9 +65,7 @@ var (
 	OnEditPostProcessVoiceDataEvent   func(serverConnectionHandlerID uint64, clientID teamspeak.AnyID, samples *Samples, channelSpeakers []uint, channelFillMask *uint)
 )
 
-var (
-	functions *TS3Functions
-)
+var functions *TS3Functions
 
 func Functions() *TS3Functions {
 	return functions

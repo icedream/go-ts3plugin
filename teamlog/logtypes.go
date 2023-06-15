@@ -3,7 +3,7 @@ package teamlog
 //go:generate stringer -type=LogType,LogLevel -output generated_logtypes_string.go
 
 /*
-#cgo CFLAGS: -I../pluginsdk/include -I.
+#cgo CFLAGS: -I.
 #include "teamlog/logtypes.h"
 */
 import "C"
