@@ -18,14 +18,10 @@ var (
 	InfoTitle      string
 )
 
-var (
-	RequestAutoload = false
-)
+var RequestAutoload = false
 
-var (
-	// Will be set by TeamSpeak after plugin is loaded.
-	pluginID string
-)
+// Will be set by TeamSpeak after plugin is loaded.
+var pluginID string
 
 var (
 	Init                           func() (ok bool)
@@ -69,9 +65,7 @@ var (
 	OnEditPostProcessVoiceDataEvent   func(serverConnectionHandlerID uint64, clientID teamspeak.AnyID, samples *Samples, channelSpeakers []uint, channelFillMask *uint)
 )
 
-var (
-	functions *TS3Functions
-)
+var functions *TS3Functions
 
 func Functions() *TS3Functions {
 	return functions
