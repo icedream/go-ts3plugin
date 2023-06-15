@@ -1,7 +1,7 @@
 package ts3plugin
 
 /*
-#cgo CFLAGS: -I./pluginsdk/include -I.
+#cgo CFLAGS: -I.
 
 #include <stdio.h> // uint types
 

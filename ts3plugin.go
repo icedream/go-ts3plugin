@@ -1,8 +1,6 @@
 package ts3plugin
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/pluginsdk/include
-
 #include <stdio.h> // uint types
 #include <stdlib.h> // free
 

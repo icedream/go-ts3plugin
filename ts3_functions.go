@@ -3,7 +3,7 @@ package ts3plugin
 //go:generate go run ./internal/generate/ts3_functions/main.go
 
 /*
-#cgo CFLAGS: -I./pluginsdk/include -I.
+#cgo CFLAGS: -I.
 
 #include <stdlib.h> // free
 #include "generated_ts3_function_wrappers.h"
