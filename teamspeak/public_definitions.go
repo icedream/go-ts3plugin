@@ -1,7 +1,7 @@
 package teamspeak
 
 /*
-#cgo CFLAGS: -I../pluginsdk/include -I.
+#cgo CFLAGS: -I.
 
 #include <teamspeak/public_definitions.h>
 
