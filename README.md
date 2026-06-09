@@ -11,8 +11,8 @@ automations.
 
 - Go 1.18 or newer (older versions have not been tested against).
 - A working C compiler suite.
-- Your own unpacked copy of [Version 24 the TeamSpeak3 Plugin SDK](https://github.com/TeamSpeak-Systems/ts3client-pluginsdk/tree/a39d50383b4a023941c31c08fe0c9766b149ed01).
-    To download it just click "Code" and then "Download ZIP" there.
+- Your own unpacked copy of [the TeamSpeak3 Plugin SDK](https://github.com/TeamSpeak-Systems/ts3client-pluginsdk).
+    To download it just go to Releases, the version to target (26 is current latest) and then "Download ZIP" there.
 - Having the `include/` directory exported as part of environment variable
     `CGO_CPPFLAGS` (e.g. `-I/path/to/your/sdk/copy/include/`).
 
